@@ -7,7 +7,8 @@ var userSchema = new userSchema({
         unique: true
     },
     name: {
-        type: String
+        type: String,
+        require:true
     },
     password: {
         type: String,
