@@ -1,0 +1,17 @@
+<div class="job-header">
+  <div class="col content">
+    <p>Added on: {{ job.createdAt }}</p>
+    <h2>{{ job.name }}</h2>
+    <div class="job-description">
+      <h4>Description</h4>
+      <div>{{ job.description }}</div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <h4>Country</h4>
+    <p>{{ job.country }}</p>
+    <h4>Industry</h4>
+    <p>{{ job.industry }}</p>
+    <h4>Job type</h4>
+    <p>{{ job.type }}</p>
+  </div>

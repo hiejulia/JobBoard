@@ -1,3 +1,19 @@
-<p>
-  jobs works!
-</p>
+<div *ngFor="#let job of jobs" class="col">
+  <h3>
+    <a href="#" [routerLink]="['/Jobs', 'JobDetail', { id: job._id, slug: job.slug }]">
+            {{ job.title }}
+          </a>
+  </h3>
+  <p>
+    <a href="#" [routerLink]="['/Companies', 'CompanyDetail', { id: job.company._id, slug: job.company.slug }]">
+            {{ job.company.name }}
+          </a>
+    <span>·</span>
+    <span>{{ job.industry }}</span>
+    <span>·</span>
+    <span>{{ job.type }}</span>
+    <span>·</span>
+    <span>{{ job.createdAt }}</span>
+  </p>
+  <p>{{ job.summary }}</p>
+</div>

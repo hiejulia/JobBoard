@@ -8,6 +8,8 @@ import { CompanyCreateComponent } from './company-create/company-create.componen
 import { CompanyListComponent } from './company-list/company-list.component';
 import { JobBaseComponent } from './job-base/job-base.component';
 import { JobsComponent } from './jobs/jobs.component';
+import { JobListComponent } from './job-list/job-list.component';
+import { JobDetailComponent } from './job-detail/job-detail.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { JobsComponent } from './jobs/jobs.component';
     CompanyCreateComponent,
     CompanyListComponent,
     JobBaseComponent,
-    JobsComponent
+    JobsComponent,
+    JobListComponent,
+    JobDetailComponent
   ],
   imports: [
     BrowserModule,
