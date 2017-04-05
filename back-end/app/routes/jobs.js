@@ -8,3 +8,13 @@ const jobCtrl = require('../controllers/job');
 const auth = require('../middlewares/authentication');
 const authorize = require('../middlewares/authorization');
 const response = require('../helpers/response');
+
+
+//get all jobs
+router.get('/jobs',jobCtrl.getAll,response.toJSON('job'));
+//get one job by job id 
+router.get('/jobs/:jobId',jobCtrl.findById,response.toJSON('job'));
+//get all jobs of a certain company id
+router.get('/companies/:companyId/jobs',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.create);
+//update 
+router.put('/companies/:companyId/jobs/:jobId',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.findById,jobCtrl.update);
