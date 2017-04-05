@@ -10,6 +10,8 @@ import { JobBaseComponent } from './job-base/job-base.component';
 import { JobsComponent } from './jobs/jobs.component';
 import { JobListComponent } from './job-list/job-list.component';
 import { JobDetailComponent } from './job-detail/job-detail.component';
+import { JobCreateComponent } from './job-create/job-create.component';
+import { CompanyDetailComponent } from './company-detail/company-detail.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { JobDetailComponent } from './job-detail/job-detail.component';
     JobBaseComponent,
     JobsComponent,
     JobListComponent,
-    JobDetailComponent
+    JobDetailComponent,
+    JobCreateComponent,
+    CompanyDetailComponent
   ],
   imports: [
     BrowserModule,
