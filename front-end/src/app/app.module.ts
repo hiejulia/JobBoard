@@ -12,6 +12,8 @@ import { JobListComponent } from './job-list/job-list.component';
 import { JobDetailComponent } from './job-detail/job-detail.component';
 import { JobCreateComponent } from './job-create/job-create.component';
 import { CompanyDetailComponent } from './company-detail/company-detail.component';
+import { ProfileEditComponent } from './profile-edit/profile-edit.component';
+import { ProfileBlockComponent } from './profile-block/profile-block.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,9 @@ import { CompanyDetailComponent } from './company-detail/company-detail.componen
     JobListComponent,
     JobDetailComponent,
     JobCreateComponent,
-    CompanyDetailComponent
+    CompanyDetailComponent,
+    ProfileEditComponent,
+    ProfileBlockComponent
   ],
   imports: [
     BrowserModule,
