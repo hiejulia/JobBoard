@@ -115,7 +115,10 @@ function removeCompanyMember(req, res, next) {
   });
 
 }
+//CHECK USER COMPANY 
+function checkUserCompany(req, res, next){
 
+}
 
 
 
@@ -127,3 +130,4 @@ module.exports.getAll = getAllCompanies;
 module.exports.update = updateCompany;
 module.exports.addMember = addCompanyMember;
 module.exports.removeMember = removeCompanyMember;
+module.exports.checkUserCompany = checkUserCompany;
