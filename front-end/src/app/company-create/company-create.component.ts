@@ -23,5 +23,23 @@ export class CompanyCreateComponent implements OnInit {
   ngOnInit() {
     this.company = new Company();
   }
+  onSubmit(event){
+    event.preventDefault();
+    console.log(event);
+    this._companyService
+      .create(this.company)
+      .subscribe((company) => {
+        if(company) {
+          this.goToCompany(company._id, company.slug);
+
+        }
+      },(err) => {
+        console.log(err);
+      });
+  }
+
+  goToCompany(id, slug) {
+    this._router.navigate(['CompanyDetail', { id: id, slug: slug}]);
+  }
 
 }
