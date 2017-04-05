@@ -95,6 +95,24 @@ function addCompanyMember(req, res, next) {
 
 //REMOVE COMPANY MEMBER 
 function removeCompanyMember(req, res, next) {
+    let includes = _.includes(req.resources.company.members, req.body.member);
+
+  if (!includes) {
+    return res.status(409).json({
+      message: 'User is not a member of your company',
+      type: 'not_member'
+    });
+  }
+
+   _.pull(req.resources.company.members, req.body.member);
+  req.resources.company.save((err, updatedCompany) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.resources.company = updatedCompany;
+    next();
+  });
 
 }
 
