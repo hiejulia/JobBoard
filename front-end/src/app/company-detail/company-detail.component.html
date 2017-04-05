@@ -1,3 +1,14 @@
-<p>
-  company-detail works!
-</p>
+<div class="company-header">
+  <h2>{{ company.name }}</h2>
+  <p>
+    <span>{{ company.country }}</span>
+    <span>·</span>
+    <span>{{ company.address }}</span>
+  </p>
+</div>
+<div class="company-description">
+  <h4>Description</h4>
+</div>
+<div class="company-job-list">
+  <jobs [company]=company._id></jobs>
+</div>
