@@ -1,0 +1,22 @@
+{
+  "name": "jobboard",
+  "version": "1.0.0",
+  "description": "Job Board web app that have the same functionalities of a recruting web app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HienNguyen711/JobBoard.git"
+  },
+  "keywords": [
+    "MEAN"
+  ],
+  "author": "hiennguyen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HienNguyen711/JobBoard/issues"
+  },
+  "homepage": "https://github.com/HienNguyen711/JobBoard#readme"
+}
