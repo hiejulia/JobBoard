@@ -8,18 +8,70 @@ const ObjectId = mongoose.Types.ObjectId;
 
 
 //get user profile 
-function getUserProfile(){
+function getUserProfile(req, res, next){
+    User
+  .findById(req.user._id)
+  .select('+profile')
+  .exec((err, user) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.resources.user = user;
+    next();
+  });
 
 }
 
 ///create profile block 
-function createUserProfileBlock(){
+function createUserProfileBlock(req, res, next){
+    if (!req.body.title) {
+    return res.status(400).json({ message: 'Block title is required' });
+  }
+
+  var block = new ProfileBlock(req.body);
+  req.resources.user.profile.push(block);
+
+  req.resources.user.save((err, updatedProfile) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.resources.block = block;
+    next();
+  });
 
 }
 
 
 //update profile 
-function updateUserProfile() {
+function updateUserProfile(req, res, next) {
+    // same as calling user.profile.id(blockId)
+  // var block = req.resources.user.profile.find(function(b) {
+  //   return b._id.toString() === req.params.blockId;
+  // });
+
+  let block = req.resources.user.profile.id(req.params.blockId);
+
+  if (!block) {
+    return res.status(404).json({ message: '404 not found.'});
+  }
+
+  if (!block.title) {
+    return res.status(400).json({ message: 'Block title is required' });
+  }
+
+  let data = _.pick(req.body, ['title', 'data']);
+  _.assign(block, data);
+
+  req.resources.user.save((err, updatedProfile) => {
+    if (err) {
+      return next(err);
+    }
+
+    req.resources.block = block;
+    next();
+  });
 
 } 
 
