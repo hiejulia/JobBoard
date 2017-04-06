@@ -1,9 +1,10 @@
 'use strict';
-
 const mongoose = require('mongoose');
 const commonHelper = require('../helpers/common');
+const Countries = require('../../config/variables/countries');
 const Schema = mongoose.Schema;
 const ObjectId = Schema.ObjectId;
+const cntEnum = Countries.map(item => item.code);
 
 let CompanySchema = new Schema({
 
