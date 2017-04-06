@@ -18,3 +18,10 @@ router.get('/jobs/:jobId',jobCtrl.findById,response.toJSON('job'));
 router.get('/companies/:companyId/jobs',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.create);
 //update 
 router.put('/companies/:companyId/jobs/:jobId',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.findById,jobCtrl.update);
+//create new job 
+
+router.post('/companies/:companyId/jobs',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.create);
+router.delete('/companies/:companyId/jobs/:jobId',auth.ensured,companyCtrl.findById,authorize.onlyMembers,jobCtrl.findById,jobCtrl.remove);
+
+
+module.exports = router;
