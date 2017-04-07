@@ -6,71 +6,85 @@ const Schema = mongoose.Schema;
 const _ = require('lodash');
 const ProfileBlockSchema = mongoose.model('ProfileBlock').schema;
 
-
-let userSchema = new userSchema({
-    email: {
+let UserSchema = new Schema({
+  email:  {
+    type: String,
+    required: true,
+    unique: true
+  },
+  name: {
+    type: String
+  },
+  password: {
+    type: String,
+    required: true,
+    select: false
+  },
+  passwordSalt: {
+    type: String,
+    required: true,
+    select: false
+  },
+  active: {
+    type: Boolean,
+    default: true
+  },
+  profile: {
+    type: [ProfileBlockSchema],
+    select: false
+  },
+  roles: {
+    type: [
+      {
         type: String,
-        required: true,
-        unique: true
-    },
-    name: {
-        type: String,
-        require:true
-    },
-    password: {
-        type: String,
-        required: true,
-        select: false
-    },
-    passwordSalt: {
-        type: String,
-        required: true,
-        select: false
-    },
-    active: {
-        type: Boolean,
-        default: true
-    },
-    roles: {
-        type: [
-            {
-                type: String,
-                enum: ['user', 'member', 'owner']
-            }
-        ],
-        default: ['user']
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+        enum: ['user', 'candidate', 'member', 'owner']
+      }
+    ],
+    default: ['user']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
+UserSchema.statics.authenticate = authenticateUser;
+UserSchema.statics.register = registerUser;
+UserSchema.methods.changePassword = changeUserPassword;
 
-
-//authenticate user 
-
-function authenticateUser(email, password, callback){
-    //find by email
-    this.findOne({ email: email })
-    .select('+password +passwordSalt')
+/**
+ * Find a user by it's email and checks the password againts the stored hash
+ *
+ * @param {String} email
+ * @param {String password
+ * @param {Function} callback
+ */
+function authenticateUser(email, password, callback) {
+  this
+  .findOne({ email: email })
+  .select('+password +passwordSalt')
   .exec((err, user) => {
-      //if err 
     if (err) {
       return callback(err, null);
     }
+
     // no user found just return the empty user
     if (!user) {
       return callback(err, user);
     }
-    //verify the password with existing hash from the user 
-     passwordHelper.verify(password,user.password,user.passwordSalt,(err, pwResult) => {
+
+    // verify the password with the existing hash from the user
+    passwordHelper.verify(
+      password,
+      user.password,
+      user.passwordSalt,
+      (err, result) => {
         if (err) {
           return callback(err, null);
         }
 
         // if password does not match don't return user
-        if (pwResult === false) {
+        if (result === false) {
           return callback(err, null);
         }
 
@@ -78,33 +92,36 @@ function authenticateUser(email, password, callback){
         user.password = undefined;
         user.passwordSalt = undefined;
         // return user if everything is ok
-        //else case 
         callback(err, user);
       }
     );
   });
-
 }
 
-//register new user 
-function registerUser(credentials, cb){
-    let data = _.cloneDeep(credentials);
-    //hash the password 
-    passwordHelper.hash(credentials.password, (err, hashedPassword, salt) => {
+/**
+ * Create a new user with the specified properties
+ *
+ * @param {Object} opts - user data
+ * @param {Function} callback
+ */
+ function registerUser(opts, callback) {
+   let data = _.cloneDeep(opts);
+
+   //hash the password
+   passwordHelper.hash(opts.password, (err, hashedPassword, salt) => {
      if (err) {
-       return callback(err);//return cb with error
+       return callback(err);
      }
 
      data.password = hashedPassword;
      data.passwordSalt = salt;
 
-
-    //create the user 
-      //save the user to the mongodb
-    this.model('User').create(data, (err, user) => {
+     //create the user
+     this.model('User').create(data, (err, user) => {
        if (err) {
          return callback(err, null);
        }
+
        // remove password and salt from the result
        user.password = undefined;
        user.passwordSalt = undefined;
@@ -112,50 +129,49 @@ function registerUser(credentials, cb){
        callback(err, user);
      });
    });
+ }
 
+/**
+ * Create an instance method to change password
+ *
+ */
+ function changeUserPassword(oldPassword, newPassword, callback) {
+   this
+   .model('User')
+   .findById(this.id)
+   .select('+password +passwordSalt')
+   .exec((err, user) => {
+     if (err) {
+       return callback(err, null);
+     }
 
-}
-//change user password 
-function changeUserPassword(oldPassword, newPassword, callback){
-    //find the user password by id 
-    this.model('User')
-            .findById(this.id)
-            .select('+password +passwordSalt')
-            .exec((err, user) => {
-                if (err) {//if erro return user null = no user return 
-                return callback(err, null);
-                }
+     // no user found just return the empty user
+     if (!user) {
+       return callback(err, user);
+     }
 
-
-    //if no user found return the empty user
-    if(!user){
-        return callback(err, user);
-    }
-
-    //use password helper with verify function
-    passwordHelper.verify(oldPassword,
+     passwordHelper.verify(
+       oldPassword,
        user.password,
        user.passwordSalt,
        (err, result) => {
          if (err) {
            return callback(err, null);
          }
-         //if password not match return user null
-         if(!result){
-             let PassNoMatchError = new Error('Old password does not match.');
+
+         // if password does not match don't return user
+         if (result === false) {
+           let PassNoMatchError = new Error('Old password does not match.');
            PassNoMatchError.type = 'old_password_does_not_match';
            return callback(PassNoMatchError, null);
          }
-          //if yes,
 
-
-    //generate new password
-
-    //save the user with new password in the mongodb 
-    passwordHelper.hash(newPassword, (err, hashedPassword, salt) => {
+         // generate the new password and save the user
+         passwordHelper.hash(newPassword, (err, hashedPassword, salt) => {
            this.password = hashedPassword;
            this.passwordSalt = salt;
-this.save((err, saved) => {
+
+           this.save((err, saved) => {
              if (err) {
                return callback(err, null);
              }
@@ -174,11 +190,5 @@ this.save((err, saved) => {
    });
  }
 
-
-
-
-UserSchema.statics.authenticate = authenticateUser;
-UserSchema.statics.register = registerUser;
-UserSchema.methods.changePassword = changeUserPassword;
-
+// compile User model
 module.exports = mongoose.model('User', UserSchema);

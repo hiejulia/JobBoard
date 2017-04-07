@@ -8,7 +8,7 @@ const config = require('./config');
 //init app
 const app = express();
 
-const logger = require('./config/winston').init(app);
+// const logger = require('./config/winston').init(app);
 
 var server;
 /**
