@@ -1,6 +1,6 @@
 'use strict';
 
-//create application 
+//create application
 function createApplication(req,res, next){
     Application.create({
         user:req.user._id,
@@ -17,7 +17,7 @@ function createApplication(req,res, next){
 
 //find application by _id
 function findApplicationById(req, res, next){
-    //check for valid id 
+    //check for valid id
     if (!ObjectId.isValid(id)) {
     res.status(404).send({ message: 'Invalid application id. Not found '});
   }
@@ -31,11 +31,11 @@ function findApplicationById(req, res, next){
   });
 
 }
-//get all jobs application 
+//get all jobs application
 function getAllApplications(req, res, next) {
   const limit = +req.query.limit || 50;//set limit
-  const skip = +req.query.skip || 0;//set skip 
-  //set query 
+  const skip = +req.query.skip || 0;//set skip
+  //set query
   let query = {
     job: req.params.jobId
   };
@@ -62,7 +62,7 @@ function getAllApplications(req, res, next) {
 function updateApplication(req, res, next) {
     ///get the application by req
   req.resources.application.status = req.body.status;
-  //save 
+  //save
   req.resources.application.save((err, updatedApplication) => {
     if (err) {
       return next(err);
@@ -72,10 +72,10 @@ function updateApplication(req, res, next) {
   });
 }
 
-//remove the application 
+//remove the application
 function removeApplication(req,res, next){
     //get the id of the application
-    //Application delete 
+    //Application delete
     req.resources.application.remove((err) => {
         if(err){
             return next(err);

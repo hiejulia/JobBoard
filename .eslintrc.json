@@ -1,6 +1,6 @@
-{
-  "extends": "google",
-  "rules": {
-    // Additional, per-project rules...
-  }
-}
+// {
+//   "extends": ["eslint:recommended", "google"],
+//   "rules": {
+//     "semi": 2
+//   }
+// }
