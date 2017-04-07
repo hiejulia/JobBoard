@@ -87,15 +87,40 @@ it('should not authenticate a user with invalid credentials',function(done){
 });
 
 //test when user change password
-it('should change the password of the user ',function(done){
+ it('should change the password of a user', function(done) {
     _user.changePassword('user_password', 'new_user_password', function(err, result) {
       if (err) throw err;
+
       should.exist(result);
+      result.success.should.equal(true);
+      result.message.should.equal('Password changed successfully.');
+      result.type.should.equal('password_change_success');
 
+      // run a check credential with the new password
+      User.authenticate(_user.email, 'new_user_password', function(err, user) {
+        if (err) throw err;
+
+        should.exist(user);
+        user.email.should.equal(_user.email);
+        done();
+      });
     });
+  });
 
-});
+  it('should not change password if old password does not match', function(done) {
+    _user.changePassword('not_good', 'new_user_password', function(err, result) {
+      should.not.exist(result);
+      should.exist(err);
+      err.type.should.equal('old_password_does_not_match');
 
+      // run a check credential with the old password
+      User.authenticate(_user.email, 'new_user_password', function(err, user) {
+        if (err) throw err;
 
-
+        should.exist(user);
+        user.email.should.equal(_user.email);
+        done();
+      });
+    });
+  });
 });
