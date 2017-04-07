@@ -9,6 +9,8 @@ const response = require('../helpers/response');
 
 //create a company 
 router.post('/companies',auth.ensured,,companyCtrl.checkUserCompany,companyCtrl.create);
+//get
+router.get('/companies',companyCtrl.getAll,response.toJSON('companies'));
 //get company by id 
 router.get('/companies/:companyId',companyCtrl.findById,response.toJSON('company'));
 //update a company
