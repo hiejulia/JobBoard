@@ -1,5 +1,5 @@
 'use strict';
-//CRUD 
+//CRUD
 const MAX_LIMIT = 50;
 const JOB_FIELDS = ['title', 'summary', 'description', 'type', 'industry', 'country'];
 
@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const Job = mongoose.model('Job');
 const ObjectId = mongoose.Types.ObjectId;
 
-//CREATE JOB FUNCTION 
+//CREATE JOB FUNCTION
 function createJob(req,res,next) {
     let data = _.pick(req.body, JOB_FIELDS);
   data.company = req.company._id;
@@ -20,7 +20,7 @@ function createJob(req,res,next) {
   });
 
 }
-//FIND JOB BY ID 
+//FIND JOB BY ID
 function findById(req,res,next){
     if (!ObjectId.isValid(id)) {
     res.status(404).send({ message: 'Not found.'});
@@ -61,19 +61,28 @@ function getAllJobs(req,res,next){
 
 
 }
-//update job 
-function updateJob(req,res, next){
-
-    var data = _.pick(req.body, JOB_FIELDS);
+//update job
+function updateJob(req, res, next) {
+  let data = _.pick(req.body, ['title', 'summary', 'description', 'type', 'industry', 'country']);
   _.assign(req.resources.job, data);
-  req.resources.job.save((err, updatedJob) => {
-      if(err) {
-          console.log(err);
-          return next(err);
-      }
-      res.json(updatedJob);
-  });
 
+  req.resources.job.save((err, updatedJob) => {
+    if (err) {
+      return next(err);
+    }
+
+    res.json(job);
+  });
+}
+
+function removeJob(req, res, next) {
+  req.resources.job.remove((err) => {
+    if (err) {
+      return next(err);
+    }
+
+    res.json(req.resources.job);
+  });
 }
 
 

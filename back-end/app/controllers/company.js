@@ -3,12 +3,8 @@
 const _ = require('lodash');
 const mongoose = require('mongoose');
 const Company = mongoose.model('Company');
-/**
- * CREATE COMPANY 
- * @param {*} req 
- * @param {*} res 
- * @param {*} next 
- */
+
+
 function creatCompany(req, res ,next) {
     let data = _.pick(req.body,['name','country','address']);
     data.owner = req.user._id;
@@ -25,7 +21,7 @@ function creatCompany(req, res ,next) {
 }
 
 /**
- * GETTING THE COMPANY BY COMPANY ID 
+ * GETTING THE COMPANY BY COMPANY ID
  */
 function findCompanyById(req,res, next){
     if(!ObjectId.isValid(id)){
@@ -61,7 +57,7 @@ function getAllCompanies(req,res, next){
     next();
   });
 }
-//UPDATE COMPANY 
+//UPDATE COMPANY
 function updateCompany(req, res, next){
     let data = _.pick(req.body, ['name', 'country', 'address']);
     _.assign(req.resources.company,req.body);
@@ -74,7 +70,7 @@ function updateCompany(req, res, next){
     })
 
 }
-//ADD A COMPANY MEMBER 
+//ADD A COMPANY MEMBER
 function addCompanyMember(req, res, next) {
     let includes = _.includes(req.resources.company.members, req.body.member);
     if(includes){
@@ -93,7 +89,7 @@ function addCompanyMember(req, res, next) {
 
 }
 
-//REMOVE COMPANY MEMBER 
+//REMOVE COMPANY MEMBER
 function removeCompanyMember(req, res, next) {
     let includes = _.includes(req.resources.company.members, req.body.member);
 
@@ -115,15 +111,29 @@ function removeCompanyMember(req, res, next) {
   });
 
 }
-//CHECK USER COMPANY 
+//CHECK USER COMPANY
 function checkUserCompany(req, res, next){
+  Company.findOne({ owner: req.user._id }, (err, company) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (company) {
+      return res.status(409).json({
+        message: 'You already are the owner of ' + company.name,
+        type: 'user_has_company'
+      });
+    }
+
+    next();
+  })
 
 }
 
 
 
 
-//export function of company controller 
+//export function of company controller
 module.exports.create = createCompany;
 module.exports.findById = findCompanyById;
 module.exports.getAll = getAllCompanies;
