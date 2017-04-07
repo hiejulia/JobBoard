@@ -16,10 +16,16 @@ describe('Token Helper', function() {
 
        });
 
+it('should generate a random 32 length token', function(done) {
+      tokenHelper.generate(32, function(err, token) {
+        if (err) throw err;
 
+        should.exist(token);
+        token.should.be.a('string');
+        token.length.should.equal(32);
+        done();
+      });
+    });
   });
-
-
-
 
 });
