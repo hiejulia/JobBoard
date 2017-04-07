@@ -18,5 +18,5 @@ function initPassport(app){
 }
 
 
-
+//exports
 module.exports.init = initPassport;
