@@ -15,9 +15,49 @@ const config = require('./index');
 function initExpress(app) {
 
 
+     const root = app.get('root');
+  const sessionOpts = {
+    secret: config.session.secret,
+    key: 'skey.sid',
+    resave: config.session.resave,
+    saveUninitialized: config.session.saveUninitialized
+  };
+
+  //common express configs 
+  //middlewares 
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
+  app.use(methodOverride());
+  app.disable('x-powered-by');
+//mongo session declare
+  if (config.session.type === 'mongo') {
+    sessionOpts.store = new MongoStore({
+      url: config.mongodb.uri
+    });
+  }
+//middleware passport for authentication 
+  app.use(session(sessionOpts));
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.use(function(req, res, next) {
+    req.resources = req.resources || {};
+    res.locals.app = config.app;
+    res.locals.currentUser = req.user;
+
+    next();
+  });
+
+  // always load static files if dev env
+  if (config.serveStatic) {
+    app.use(serveStatic(path.join(root, 'public')));
+    app.use('/v1', serveStatic(path.join(root, 'public_old')));
+  }
+
+
 }
 
 
 
-
+//export 
     module.exports.init = initExpress;
